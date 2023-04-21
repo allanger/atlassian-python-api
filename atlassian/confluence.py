@@ -2274,6 +2274,36 @@ class Confluence(AtlassianRestAPI):
         data = {"key": space_key, "name": space_name}
         self.post("rest/api/space", data=data)
 
+    def update_space(self, space_key, space_name, description=None, homepage=None, type="page", status=None, additional_params=None):
+        """
+        Create space
+        :param space_key:
+        :param space_name:
+        :return:
+        """
+        log = logging.getLogger('mkdocs')
+
+        url = "rest/api/space/{}".format(space_key)
+        data = {"key": space_key, "name": space_name, "type": type}
+        log.warning(data)
+        if description:
+            data["description"] = string(description)
+        if homepage:
+            log.warning(data)
+            data["homepage"] = {"id": string(homepage)}
+            log.warning(data)
+        if status:
+            data["status"] = status
+        if additional_params:
+            data["additional_params"] = additional_params
+        app_headers = {
+            "X-Atlassian-Token": "nocheck",
+            "Content-Type": "application/vnd.atl.plugins+json",
+        }
+        log.warning(data)
+        self.put(url, data=data, headers=app_headers)
+            
+
     def delete_space(self, space_key):
         """
         Delete space
